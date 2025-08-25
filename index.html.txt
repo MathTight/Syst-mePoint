@@ -4,20 +4,273 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Système de points pour les récompenses</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="p-4 sm:p-8">
-    <!-- ... (copy everything inside <body> from your HTML here, EXCEPT the <script> tag) ... -->
 
-    <!-- Section du haut, grilles, etc. -->
-    <!-- ... -->
+    <!-- Section du haut : Titre et compteurs de points pour chaque enfant -->
+    <div class="flex flex-col items-center justify-center p-4 bg-white rounded-2xl shadow-lg mb-8 max-w-lg mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2 text-center">Système de points</h1>
+        <div class="text-center text-gray-600 mb-4">Cliquez sur une tâche pour gagner ou perdre des points !</div>
+        
+        <!-- Conteneur des boutons pour choisir l'enfant -->
+        <div class="flex space-x-2 mb-4">
+            <button id="btn-madison" class="child-button px-4 py-2 rounded-full font-semibold text-lg bg-gray-200 hover:bg-blue-300 transition-colors duration-200 active">Madison</button>
+            <button id="btn-landon" class="child-button px-4 py-2 rounded-full font-semibold text-lg bg-gray-200 hover:bg-blue-300 transition-colors duration-200">Landon</button>
+            <button id="btn-jayden" class="child-button px-4 py-2 rounded-full font-semibold text-lg bg-gray-200 hover:bg-blue-300 transition-colors duration-200">Jayden</button>
+        </div>
 
-    <!-- Section des récompenses ... -->
-    <!-- ... -->
+        <!-- Compteurs pour chaque enfant -->
+        <div class="flex flex-col sm:flex-row w-full justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 p-3 bg-blue-100 rounded-full">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-bold text-blue-600">Madison:</span>
+                <span id="points-madison" class="text-3xl font-extrabold text-blue-800">0</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-bold text-blue-600">Landon:</span>
+                <span id="points-landon" class="text-3xl font-extrabold text-blue-800">0</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-bold text-blue-600">Jayden:</span>
+                <span id="points-jayden" class="text-3xl font-extrabold text-blue-800">0</span>
+            </div>
+        </div>
 
+        <!-- Section de modification manuelle et de réinitialisation -->
+        <div class="flex flex-col sm:flex-row items-center w-full mt-4 space-y-2 sm:space-y-0 sm:space-x-2">
+            <input type="number" id="manual-points" placeholder="Modifier les points" class="flex-grow p-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="btn-update-points" class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200">Mettre à jour</button>
+            <button id="btn-reset-points" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors duration-200">Réinitialiser</button>
+        </div>
+    </div>
+
+    <!-- Conteneur principal pour les catégories en grille responsive -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Catégorie: Tâches (couleur bleue) -->
+        <div class="bg-blue-200 p-6 rounded-2xl shadow-md">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4 text-center">Tâches</h2>
+            <div id="tasks-list" class="space-y-4">
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🧸 Ramasser ses jouets</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🛏️ Faire son lit</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🦷 Brosser ses dents (matin)</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🍽️ Mettre ses choses dans le lave-vaisselle</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">👚 Accrocher ses vêtements</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🥪 Vider sa boîte à lunch</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🧹 Ranger sa chambre</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🐶 Nourrir les animaux</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="2">
+                    <span class="flex items-center text-gray-700 font-medium">👖 Ranger ses vêtements dans le tiroir</span>
+                    <span class="text-lg font-bold text-green-600">+2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🍽️ Vider le lave-vaisselle</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">💇‍♀️ Peigner ses cheveux</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catégorie: Apprentissages (couleur jaune) -->
+        <div class="bg-yellow-200 p-6 rounded-2xl shadow-md">
+            <h2 class="text-2xl font-bold text-yellow-800 mb-4 text-center">Apprentissages</h2>
+            <div id="learnings-list" class="space-y-4">
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="2">
+                    <span class="flex items-center text-gray-700 font-medium">📚 Lire un livre</span>
+                    <span class="text-lg font-bold text-green-600">+2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">✍️ Faire ses devoirs sans chicaner</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🎒 Sortir les choses importantes</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🌱 Arroser les plantes</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🎒 Transporter ses sacs/lunch</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="2">
+                    <span class="flex items-center text-gray-700 font-medium">🐕 Ramasser les crottes</span>
+                    <span class="text-lg font-bold text-green-600">+2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="2">
+                    <span class="flex items-center text-gray-700 font-medium">👍 Accepter les consignes</span>
+                    <span class="text-lg font-bold text-green-600">+2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="2">
+                    <span class="flex items-center text-gray-700 font-medium">⚽ Bonne participation aux sports</span>
+                    <span class="text-lg font-bold text-green-600">+2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🚗 S’attacher en voiture</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catégorie: Comportements (couleur verte) -->
+        <div class="bg-green-200 p-6 rounded-2xl shadow-md">
+            <h2 class="text-2xl font-bold text-green-800 mb-4 text-center">Comportements</h2>
+            <div id="behaviors-list" class="space-y-4">
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🙏 S’excuser</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">💖 Aide spontanée</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">😴 Se coucher sans résistance</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🤝 Partager un jeu</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">⏳ Attendre son tour</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">👫 Aider ses pairs</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🧘 Contrôler sa colère</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🤫 Rester calme en voiture</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🗣️ Être poli avec un adulte</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">⏰ Être prêt à l’heure</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🚿 Prendre sa douche sans hésitation</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🚫 Accepter un non</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🗣️ Demander de l’aide calmement</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🪑 Rester assis à table</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🎯 Faire de bons choix</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="1">
+                    <span class="flex items-center text-gray-700 font-medium">🤝 Prévenir les conflits</span>
+                    <span class="text-lg font-bold text-green-600">+1</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Catégorie: Perte de points (couleur rouge) -->
+        <div class="bg-red-200 p-6 rounded-2xl shadow-md">
+            <h2 class="text-2xl font-bold text-red-800 mb-4 text-center">Perte de points</h2>
+            <div id="loss-list" class="space-y-4">
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="-2">
+                    <span class="flex items-center text-gray-700 font-medium">😡 Se Chamailler</span>
+                    <span class="text-lg font-bold text-red-600">-2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="-2">
+                    <span class="flex items-center text-gray-700 font-medium">👂 Ne pas écouter après 2 rappels</span>
+                    <span class="text-lg font-bold text-red-600">-2</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="-1">
+                    <span class="flex items-center text-gray-700 font-medium">🤬 Gros mots</span>
+                    <span class="text-lg font-bold text-red-600">-1</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="-5">
+                    <span class="flex items-center text-gray-700 font-medium">👊 Coups/Gestes</span>
+                    <span class="text-lg font-bold text-red-600">-5</span>
+                </div>
+                <div class="task-card flex items-center justify-between p-4 bg-white rounded-xl shadow-md cursor-pointer" data-points="-5">
+                    <span class="flex items-center text-gray-700 font-medium">😭 Crises</span>
+                    <span class="text-lg font-bold text-red-600">-5</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Section des récompenses (couleur violette) -->
+    <div class="mt-8 p-6 bg-purple-300 rounded-2xl shadow-md">
+        <h2 class="text-2xl font-bold text-purple-800 mb-4 text-center">Récompenses</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="reward-card flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-md text-center">
+                <span class="text-4xl">💰</span>
+                <span class="text-xl font-bold text-gray-800 mt-2">100 $</span>
+                <span class="text-3xl font-extrabold text-purple-600 mt-1">650 points</span>
+            </div>
+            <div class="reward-card flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-md text-center">
+                <span class="text-4xl">🎁</span>
+                <span class="text-xl font-bold text-gray-800 mt-2">30 $</span>
+                <span class="text-3xl font-extrabold text-purple-600 mt-1">200 points</span>
+            </div>
+            <div class="reward-card flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-md text-center">
+                <span class="text-4xl">🎮</span>
+                <span class="text-xl font-bold text-gray-800 mt-2">15 $</span>
+                <span class="text-3xl font-extrabold text-purple-600 mt-1">100 points</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
     <script src="app.js"></script>
 </body>
 </html>

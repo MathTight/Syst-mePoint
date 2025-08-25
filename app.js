@@ -1,60 +1,92 @@
-// Interactivity for the points counters
-document.addEventListener('DOMContentLoaded', () => {
-    let currentPoints = {
-        madison: 0,
-        landon: 0,
-        jayden: 0
-    };
-    let activeChild = 'madison';
+// Système de points pour les enfants avec persistance (localStorage)
 
-    const childButtons = document.querySelectorAll('.child-button');
-    const taskItems = document.querySelectorAll('.task-card');
-    const manualPointsInput = document.getElementById('manual-points');
-    const updateButton = document.getElementById('btn-update-points');
-    const resetButton = document.getElementById('btn-reset-points');
+const children = ["madison", "landon", "jayden"];
+let selectedChild = "madison";
+let points = {};
 
-    function updateDisplay(childName) {
-        const counterElement = document.getElementById(`points-${childName}`);
-        if (counterElement) {
-            counterElement.textContent = currentPoints[childName];
-        }
+// Chargement initial des points depuis localStorage ou initialisation à 0
+function loadPoints() {
+    const stored = localStorage.getItem("childrenPoints");
+    if (stored) {
+        points = JSON.parse(stored);
+    } else {
+        children.forEach(name => points[name] = 0);
+        savePoints();
     }
+}
+function savePoints() {
+    localStorage.setItem("childrenPoints", JSON.stringify(points));
+}
 
-    childButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            childButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            activeChild = button.id.split('-')[1];
-            manualPointsInput.value = currentPoints[activeChild];
+// Mise à jour de l'affichage des compteurs
+function updatePointsDisplay() {
+    children.forEach(name => {
+        document.getElementById(`points-${name}`).textContent = points[name];
+    });
+}
+
+// Sélection d'un enfant
+function setActiveChild(name) {
+    selectedChild = name;
+    document.querySelectorAll('.child-button').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `btn-${name}`);
+        btn.classList.toggle('bg-blue-300', btn.id === `btn-${name}`);
+        btn.classList.toggle('bg-gray-200', btn.id !== `btn-${name}`);
+    });
+}
+
+// Ajout/retrait de points en cliquant sur une tâche
+function setupTasks() {
+    document.querySelectorAll('.task-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const pts = parseInt(card.getAttribute('data-points'), 10);
+            points[selectedChild] += pts;
+            savePoints();
+            updatePointsDisplay();
         });
     });
+}
 
-    taskItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const points = parseInt(item.dataset.points);
-            currentPoints[activeChild] += points;
-            updateDisplay(activeChild);
-            manualPointsInput.value = currentPoints[activeChild];
-        });
+// Mise à jour manuelle des points
+function setupManualEdit() {
+    document.getElementById('btn-update-points').addEventListener('click', () => {
+        const val = parseInt(document.getElementById('manual-points').value, 10);
+        if (!isNaN(val)) {
+            points[selectedChild] = val;
+            savePoints();
+            updatePointsDisplay();
+        }
+        document.getElementById('manual-points').value = '';
     });
+}
 
-    updateButton.addEventListener('click', () => {
-        const newPoints = parseInt(manualPointsInput.value);
-        if (!isNaN(newPoints)) {
-            currentPoints[activeChild] = newPoints;
-            updateDisplay(activeChild);
-        } else {
-            alert("Veuillez entrer un nombre valide.");
+// Réinitialisation des points de tous les enfants
+function setupReset() {
+    document.getElementById('btn-reset-points').addEventListener('click', () => {
+        if (confirm("Voulez-vous vraiment réinitialiser les points de tous les enfants ?")) {
+            children.forEach(name => points[name] = 0);
+            savePoints();
+            updatePointsDisplay();
         }
     });
+}
 
-    resetButton.addEventListener('click', () => {
-        currentPoints[activeChild] = 0;
-        updateDisplay(activeChild);
-        manualPointsInput.value = 0;
+// Sélection d'enfant via boutons
+function setupChildButtons() {
+    children.forEach(name => {
+        document.getElementById(`btn-${name}`).addEventListener('click', () => {
+            setActiveChild(name);
+        });
     });
+}
 
-    updateDisplay('madison');
-    updateDisplay('landon');
-    updateDisplay('jayden');
+// Initialisation
+window.addEventListener('DOMContentLoaded', () => {
+    loadPoints();
+    updatePointsDisplay();
+    setupChildButtons();
+    setActiveChild(selectedChild);
+    setupTasks();
+    setupManualEdit();
+    setupReset();
 });

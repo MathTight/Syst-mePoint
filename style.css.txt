@@ -1,0 +1,16 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f6f0f5 0%, #d4e7f8 100%);
+}
+.task-card, .reward-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.task-card:hover, .reward-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.child-button.active {
+    background-color: #60a5fa;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
